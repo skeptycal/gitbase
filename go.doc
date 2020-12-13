@@ -1,0 +1,98 @@
+package gitbase // import "github.com/src-d/gitbase"
+
+const ReferencesTableName = "refs" ...
+var ErrColumnNotFound = errors.NewKind("column %s not found for table %s") ...
+var BlobsSchema = sql.Schema{ ... }
+var CommitBlobsSchema = sql.Schema{ ... }
+var CommitFilesSchema = sql.Schema{ ... }
+var CommitTreesSchema = sql.Schema{ ... }
+var CommitsSchema = sql.Schema{ ... }
+var ErrBblfshConnection = errors.NewKind("unable to establish a connection with the bblfsh server: %s")
+var ErrInvalidContext = errors.NewKind("invalid context received: %v")
+var ErrInvalidGitbaseSession = errors.NewKind("expecting gitbase session, but received: %T")
+var ErrNoRepositoryPartition = errors.NewKind("%T not a valid repository partition")
+var ErrPoolRepoNotFound = errors.NewKind("repository id %s not found in the pool")
+var ErrSessionCanceled = errors.NewKind("session canceled")
+var FilesSchema = sql.Schema{ ... }
+var RefCommitsSchema = sql.Schema{ ... }
+var RefsSchema = sql.Schema{ ... }
+var RegMatchChars = regexp.MustCompile(`(^|[^\\])([*[?])`)
+var RemotesSchema = sql.Schema{ ... }
+var RepositoriesSchema = sql.Schema{ ... }
+var TreeEntriesSchema = sql.Schema{ ... }
+func IsGitRepo(path string) (bool, error)
+func IsSivaFile(file string) bool
+func NewChainableRowIter(iter ChainableIter) sql.RowIter
+func NewDatabase(name string, pool *RepositoryPool) sql.Database
+func NewSchemaMapperIter(iter sql.RowIter, mappings []int) sql.RowIter
+func NewSessionBuilder(pool *RepositoryPool, opts ...SessionOption) server.SessionBuilder
+func PatternMatches(pattern string) ([]string, error)
+func StripPrefix(root, path string) (string, error)
+type BblfshClient struct{ ... }
+type BlobsIter interface{ ... }
+    func NewAllCommitBlobsIter(filters sql.Expression) BlobsIter
+    func NewCommitBlobBlobsIter(commitBlobs BlobsIter, filters sql.Expression, readContent bool) BlobsIter
+    func NewCommitBlobsIter(commits CommitsIter, filters sql.Expression) BlobsIter
+    func NewIndexCommitBlobsIter(index sql.IndexLookup, filters sql.Expression) BlobsIter
+    func NewRepoBlobsIter(repos ReposIter, filters sql.Expression, readContent bool) BlobsIter
+    func NewTreeEntryBlobsIter(squashTreeEntriesIter TreeEntriesIter, filters sql.Expression, ...) BlobsIter
+type ChainableIter interface{ ... }
+    func NewCommitFileBlobsIter(files FilesIter, filters sql.Expression, readContent bool) ChainableIter
+    func NewCommitFileFilesIter(files FilesIter, filters sql.Expression, readContent bool) ChainableIter
+type CommitFile struct{ ... }
+type CommitsIter interface{ ... }
+    func NewAllCommitsIter(filters sql.Expression, virtual bool) CommitsIter
+    func NewAllRefCommitsIter(filters sql.Expression) CommitsIter
+    func NewIndexCommitsIter(index sql.IndexLookup, filters sql.Expression) CommitsIter
+    func NewRefCommitCommitsIter(refCommits CommitsIter, filters sql.Expression) CommitsIter
+    func NewRefHEADCommitsIter(refsIter RefsIter, filters sql.Expression, virtual bool) CommitsIter
+    func NewRefHeadRefCommitsIter(refs RefsIter, filters sql.Expression) CommitsIter
+    func NewRefRefCommitsIter(refsIter RefsIter, filters sql.Expression) CommitsIter
+    func NewRepoCommitsIter(repos ReposIter, filters sql.Expression) CommitsIter
+type Database struct{ ... }
+type FilesIter interface{ ... }
+    func NewAllCommitFilesIter(filters sql.Expression) FilesIter
+    func NewCommitFilesIter(iter CommitsIter, filters sql.Expression) FilesIter
+    func NewIndexCommitFilesIter(index sql.IndexLookup, filters sql.Expression) FilesIter
+type Indexable interface{ ... }
+type Ref struct{ ... }
+type RefCommitsIter interface{ ... }
+    func NewIndexRefCommitsIter(index sql.IndexLookup, filters sql.Expression) RefCommitsIter
+type RefsIter interface{ ... }
+    func NewAllRefsIter(filters sql.Expression, virtual bool) RefsIter
+    func NewIndexRefsIter(filters sql.Expression, index sql.IndexLookup) RefsIter
+    func NewRemoteRefsIter(remotesIter RemotesIter, filters sql.Expression) RefsIter
+    func NewRepoRefsIter(squashReposIter ReposIter, filters sql.Expression, virtual bool) RefsIter
+type Remote struct{ ... }
+type RemotesIter interface{ ... }
+    func NewAllRemotesIter(filters sql.Expression) RemotesIter
+    func NewRepoRemotesIter(squashReposIter ReposIter, filters sql.Expression) RemotesIter
+type ReposIter interface{ ... }
+    func NewAllReposIter(filters sql.Expression) ReposIter
+type Repository struct{ ... }
+    func NewRepository(lib borges.Library, repo borges.Repository, cache cache.Object) *Repository
+type RepositoryIter struct{ ... }
+type RepositoryPartition string
+type RepositoryPool struct{ ... }
+    func NewRepositoryPool(c cache.Object, lib borges.Library) *RepositoryPool
+type Session struct{ ... }
+    func NewSession(pool *RepositoryPool, opts ...SessionOption) *Session
+type SessionOption func(*Session)
+    func WithBaseSession(sess sql.Session) SessionOption
+    func WithBblfshEndpoint(endpoint string) SessionOption
+    func WithSkipGitErrors(enabled bool) SessionOption
+type Squashable interface{ ... }
+type SquashedTable struct{ ... }
+    func NewSquashedTable(iter ChainableIter, mapping []int, filters []sql.Expression, ...) *SquashedTable
+type Table interface{ ... }
+type TreeEntriesIter interface{ ... }
+    func NewAllTreeEntriesIter(filters sql.Expression) TreeEntriesIter
+    func NewIndexTreeEntriesIter(index sql.IndexLookup, filters sql.Expression) TreeEntriesIter
+    func NewRepoTreeEntriesIter(repos ReposIter, filters sql.Expression) TreeEntriesIter
+    func NewTreeTreeEntriesIter(trees TreesIter, filters sql.Expression, virtual bool) TreeEntriesIter
+type TreeEntry struct{ ... }
+type TreesIter interface{ ... }
+    func NewAllCommitTreesIter(filters sql.Expression) TreesIter
+    func NewCommitMainTreeIter(commits CommitsIter, filters sql.Expression, virtual bool) TreesIter
+    func NewCommitTreesIter(commits CommitsIter, filters sql.Expression, virtual bool) TreesIter
+    func NewIndexCommitTreesIter(index sql.IndexLookup, filters sql.Expression) TreesIter
